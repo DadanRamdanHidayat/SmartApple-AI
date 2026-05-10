@@ -1,0 +1,38 @@
+project/
+│
+├── app.py              # main app
+├── model/
+│   └── model.h5
+│
+│
+├── templates/
+│   └── *.html
+│
+├── static/
+│   └── css/js/img
+│
+└── database/
+    └── db.py
+
+
+project/
+│
+├── app.py              # Flask (web app)
+│
+├── model/
+│   └── model.h5        # HASIL training (dipakai Flask)
+│
+├── dataset/            # DATASET (TIDAK dipakai Flask langsung)
+│   ├── train.tfrecord
+│   ├── valid.tfrecord
+│   └── test.tfrecord
+│
+├── templates/          # HTML
+│   └── *.html
+│
+├── static/             # CSS, JS, IMG
+│   └── css/js/img
+│
+└── database/
+    ├── db.py
+    └── app.db          # SQLite nanti muncul di sini

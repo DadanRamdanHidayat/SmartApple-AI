@@ -1,0 +1,19 @@
+SHARED — copy into each file's <style> block and <nav>
+
+NAV HTML:
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="/">
+      <i class="mdi mdi-apple"></i> SmartApple
+    </a>
+    <button class="nav-toggle" onclick="toggleMenu()" aria-label="Menu">
+      <i class="mdi mdi-menu" id="menu-icon"></i>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/" class="nav-link">Beranda</a></li>
+      <li><a href="/deteksi" class="nav-link">Deteksi</a></li>
+      <li><a href="/riwayat" class="nav-link">Riwayat</a></li>
+      <li><a href="/tentang" class="nav-link">Tentang</a></li>
+    </ul>
+  </div>
+</nav>

@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartApple — Deteksi Penyakit Apel</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #080e0b;
+      --bg2:      #0d1710;
+      --bg3:      #111f15;
+      --bg4:      #152318;
+      --surface:  #172519;
+      --surface2: #1e3220;
+      --border:   rgba(74,222,128,0.1);
+      --border2:  rgba(74,222,128,0.22);
+      --border3:  rgba(74,222,128,0.35);
+      --green:    #4ade80;
+      --green2:   #22c55e;
+      --green3:   #16a34a;
+      --green4:   #bbf7d0;
+      --accent:   #a3e635;
+      --text:     #f0fdf4;
+      --text2:    #86efac;
+      --muted:    #52615a;
+      --muted2:   #8a9e93;
+      --yellow:   #fbbf24;
+      --yellow2:  #fef08a;
+      --red:      #f87171;
+      --red2:     #fee2e2;
+      --purple:   #c084fc;
+      --purple2:  #f3e8ff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 64px; padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,14,11,0.85);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .nav-brand {
+      font-family: 'font-family', sans-serif; font-weight: 800; font-size: 1.2rem;
+      color: var(--green); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-brand i { font-size: 1.45rem; }
+    .nav-brand .nb { color: var(--text); }
+    .nav-links { list-style: none; display: flex; gap: 0.1rem; }
+    .nav-link {
+      text-decoration: none; color: var(--muted2); font-size: 0.875rem;
+      font-weight: 500; padding: 0.45rem 0.9rem; border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface); }
+    .nav-link.active { color: var(--green); background: rgba(74,222,128,0.08); }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--green3); color: #fff;
+      font-size: 0.85rem; font-weight: 600;
+      padding: 0.5rem 1.1rem; border-radius: 8px; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--green2); transform: translateY(-1px); }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--text); }
+    @media (max-width: 720px) {
+      .nav-toggle { display: block; }
+      .nav-cta { display: none; }
+      .nav-links {
+        display: none; flex-direction: column; position: absolute;
+        top: 64px; left: 0; right: 0;
+        background: rgba(8,14,11,0.98); backdrop-filter: blur(24px);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem 1.25rem; gap: 0.15rem;
+      }
+      .nav-links.open { display: flex; }
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 7.5rem 2rem 3rem;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(22,163,74,0.14) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .ph-inner { position: relative; z-index: 2; }
+    .ph-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(74,222,128,0.07); border: 1px solid var(--border2);
+      color: var(--green); font-size: 0.7rem; font-weight: 600;
+      padding: 0.32rem 0.9rem; border-radius: 99px; margin-bottom: 1.25rem;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .page-header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; letter-spacing: -1px;
+      color: var(--text); margin-bottom: 0.6rem;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    .page-header h1 i { color: var(--green); font-size: 2.2rem; }
+    .page-header p { color: var(--muted2); font-size: 0.95rem; max-width: 520px; margin: 0 auto; }
+
+    /* ── MAIN GRID ── */
+    .detect-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
+      align-items: start;
+    }
+    @media (max-width: 780px) { .detect-wrap { grid-template-columns: 1fr; } }
+
+    /* ── PANELS ── */
+    .panel {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 1.75rem;
+      position: relative; overflow: hidden;
+    }
+    .panel-title {
+      font-family: 'font-family', sans-serif;
+      font-size: 0.88rem; font-weight: 700;
+      color: var(--text2); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 8px;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
+    .panel-title i { font-size: 1rem; color: var(--green); }
+
+    /* ── UPLOAD AREA ── */
+    .upload-zone {
+      border: 2px dashed rgba(74,222,128,0.2);
+      border-radius: 14px; padding: 2.75rem 1.5rem;
+      text-align: center; cursor: pointer;
+      transition: all 0.25s;
+      background: rgba(74,222,128,0.02);
+      display: block; position: relative;
+    }
+    .upload-zone:hover { border-color: var(--border3); background: rgba(74,222,128,0.05); }
+    .upload-zone.has-file { border-color: var(--green3); background: rgba(74,222,128,0.04); }
+    .upload-zone input { display: none; }
+    .uz-icon { font-size: 3.2rem; color: var(--muted); display: block; margin-bottom: 0.85rem; transition: color 0.25s; }
+    .upload-zone:hover .uz-icon { color: var(--green2); }
+    .upload-zone.has-file .uz-icon { color: var(--green); }
+    .uz-text { color: var(--muted2); font-size: 0.88rem; }
+    .uz-text strong { color: var(--green); }
+    .uz-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* Preview */
+    #preview-wrap { display: none; margin-top: 1.25rem; }
+    .preview-inner { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--border2); }
+    #preview-img { width: 100%; max-height: 260px; object-fit: cover; display: block; }
+    .preview-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(8,14,11,0.85));
+      padding: 0.85rem 1rem 0.75rem;
+    }
+    .preview-filename { font-size: 0.8rem; color: var(--text2); display: flex; align-items: center; gap: 6px; }
+    .preview-size { font-size: 0.72rem; color: var(--muted2); margin-top: 0.15rem; }
+
+    /* Buttons */
+    .btn-detect {
+      width: 100%; margin-top: 1.25rem; padding: 0.9rem;
+      background: var(--green); color: #080e0b;
+      border: none; border-radius: 11px;
+      font-family: 'font-family', sans-serif; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px;
+      transition: all 0.2s; letter-spacing: 0.2px;
+    }
+    .btn-detect:hover:not(:disabled) { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(74,222,128,0.25); }
+    .btn-detect:disabled { background: var(--surface2); color: var(--muted); cursor: not-allowed; }
+    .btn-detect i { font-size: 1.1rem; }
+    .btn-reset {
+      width: 100%; margin-top: 0.6rem; padding: 0.7rem;
+      background: transparent; color: var(--muted2);
+      border: 1px solid var(--border); border-radius: 11px;
+      font-size: 0.88rem; font-weight: 500; cursor: pointer;
+      display: none; align-items: center; justify-content: center; gap: 7px;
+      transition: all 0.2s;
+    }
+    .btn-reset:hover { background: var(--surface); color: var(--text); border-color: var(--border2); }
+
+    /* ── TABS ── */
+    .input-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .input-tab {
+      flex: 1; padding: 0.65rem 0.5rem;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; cursor: pointer;
+      font-family: 'font-family', sans-serif; font-size: 0.8rem; font-weight: 700;
+      color: var(--muted2); transition: all 0.2s;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .input-tab:hover { border-color: var(--border2); color: var(--text); }
+    .input-tab.active { background: rgba(74,222,128,0.1); border-color: var(--border2); color: var(--green); }
+    .input-tab i { font-size: 1rem; }
+
+    /* ── CAMERA MODAL ── */
+    .cam-modal {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(8,14,11,0.95); backdrop-filter: blur(16px);
+      align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .cam-modal.open { display: flex; }
+    .cam-box { background: var(--bg2); border: 1px solid var(--border2); border-radius: 22px; width: 100%; max-width: 520px; overflow: hidden; }
+    .cam-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .cam-title { font-family: 'font-family', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .cam-title i { color: var(--green); }
+    .cam-close { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted2); font-size: 1.1rem; transition: all 0.2s; }
+    .cam-close:hover { background: var(--surface2); color: var(--text); }
+    .cam-viewport { position: relative; background: #000; }
+    #cam-video { width: 100%; display: block; max-height: 340px; object-fit: cover; }
+    .cam-overlay { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+    .cam-frame { width: 210px; height: 210px; border-radius: 50%; border: 2px solid rgba(74,222,128,0.5); box-shadow: 0 0 0 9999px rgba(8,14,11,0.4); position: relative; }
+    .cam-frame::before, .cam-frame::after { content: ''; position: absolute; width: 22px; height: 22px; border-color: var(--green); border-style: solid; }
+    .cam-frame::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-radius: 3px 0 0 0; }
+    .cam-frame::after  { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-radius: 0 0 3px 0; }
+    .cam-scan-line { position: absolute; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, transparent, var(--green), transparent); animation: scanline 2s ease-in-out infinite; border-radius: 99px; }
+    @keyframes scanline { 0%{top:15%;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:85%;opacity:0} }
+    .cam-hint { position: absolute; bottom: 0.75rem; left: 50%; transform: translateX(-50%); background: rgba(8,14,11,0.8); border: 1px solid var(--border); color: var(--muted2); font-size: 0.73rem; padding: 0.28rem 0.8rem; border-radius: 99px; white-space: nowrap; }
+    .cam-footer { padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 0.85rem; }
+    .cam-switch { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 1rem; display: flex; align-items: center; gap: 6px; color: var(--muted2); font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    .cam-switch:hover { border-color: var(--border2); color: var(--text); }
+    .cam-switch i { font-size: 1rem; }
+    .cam-capture { flex: 1; padding: 0.85rem; background: var(--green); color: #080e0b; border: none; border-radius: 11px; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+    .cam-capture:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 22px rgba(74,222,128,0.25); }
+    .cam-capture i { font-size: 1.1rem; }
+    .cam-status { padding: 0.6rem 1.5rem; text-align: center; font-size: 0.78rem; color: var(--muted2); border-top: 1px solid var(--border); }
+    .cam-status.error { color: var(--red); }
+    .cam-status.ok { color: var(--green); }
+    #cam-canvas { display: none; }
+
+    /* ── TIPS ── */
+    .tips-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-top: 1.25rem; }
+    .tips-header { display: flex; align-items: center; gap: 8px; font-family: 'font-family', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 1rem; }
+    .tips-header i { font-size: 1rem; }
+    .tip-row { display: flex; gap: 10px; align-items: flex-start; font-size: 0.82rem; color: var(--muted2); padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+    .tip-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .tip-row i { color: var(--green); font-size: 0.95rem; margin-top: 1px; flex-shrink: 0; }
+
+    /* ── CLASS INFO GRID (4 kelas) ── */
+    .class-mini-grid {
+      margin-top: 1.25rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .cmi {
+      border-radius: 13px; padding: 1rem;
+    }
+    .cmi-normal { background: linear-gradient(145deg,#0c2115,#0f2a1a); border: 1px solid rgba(74,222,128,0.18); }
+    .cmi-blotch { background: linear-gradient(145deg,#1a160a,#221c0c); border: 1px solid rgba(251,191,36,0.18); }
+    .cmi-rot    { background: linear-gradient(145deg,#1c0c0c,#240f0f); border: 1px solid rgba(248,113,113,0.18); }
+    .cmi-scab   { background: linear-gradient(145deg,#170c1e,#1e0f28); border: 1px solid rgba(192,132,252,0.18); }
+    .cmi-head { display: flex; align-items: center; gap: 7px; margin-bottom: 0.4rem; }
+    .cmi-head i { font-size: 1.2rem; }
+    .cmi-normal .cmi-head i { color: var(--green); }
+    .cmi-blotch .cmi-head i { color: var(--yellow); }
+    .cmi-rot    .cmi-head i { color: var(--red); }
+    .cmi-scab   .cmi-head i { color: var(--purple); }
+    .cmi-label { font-family: 'font-family', sans-serif; font-size: 0.8rem; font-weight: 700; }
+    .cmi-normal .cmi-label { color: var(--green4); }
+    .cmi-blotch .cmi-label { color: var(--yellow2); }
+    .cmi-rot    .cmi-label { color: var(--red2); }
+    .cmi-scab   .cmi-label { color: var(--purple2); }
+    .cmi p { font-size: 0.73rem; color: var(--muted2); line-height: 1.5; }
+
+    /* ── RESULT PANEL ── */
+    #result-card { display: none; }
+
+    /* Spinner */
+    .spinner-wrap { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem; padding: 3.5rem 0; }
+    .spin-outer { width: 64px; height: 64px; position: relative; }
+    .spin-ring { width: 64px; height: 64px; border: 3px solid var(--surface2); border-top-color: var(--green); border-radius: 50%; animation: spin 0.9s linear infinite; position: absolute; top: 0; left: 0; }
+    .spin-ring2 { width: 48px; height: 48px; border: 3px solid transparent; border-top-color: rgba(74,222,128,0.3); border-radius: 50%; animation: spin 1.4s linear infinite reverse; position: absolute; top: 8px; left: 8px; }
+    .spin-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin-label { color: var(--muted2); font-size: 0.88rem; }
+    .spin-sub { color: var(--muted); font-size: 0.78rem; }
+
+    /* Status card — 4 varian */
+    .status-card {
+      border-radius: 14px; padding: 1.25rem 1.5rem;
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 1.5rem; position: relative; overflow: hidden;
+    }
+    .status-card.sc-normal { background: linear-gradient(135deg, rgba(74,222,128,0.1) 0%, rgba(22,163,74,0.06) 100%); border: 1px solid rgba(74,222,128,0.25); }
+    .status-card.sc-blotch { background: linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(180,130,0,0.06) 100%); border: 1px solid rgba(251,191,36,0.25); }
+    .status-card.sc-rot    { background: linear-gradient(135deg, rgba(248,113,113,0.1) 0%, rgba(185,28,28,0.06) 100%); border: 1px solid rgba(248,113,113,0.25); }
+    .status-card.sc-scab   { background: linear-gradient(135deg, rgba(192,132,252,0.1) 0%, rgba(124,58,237,0.06) 100%); border: 1px solid rgba(192,132,252,0.25); }
+
+    .sc-icon-wrap { width: 54px; height: 54px; border-radius: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .status-card.sc-normal .sc-icon-wrap { background: rgba(74,222,128,0.12); }
+    .status-card.sc-blotch .sc-icon-wrap { background: rgba(251,191,36,0.12); }
+    .status-card.sc-rot    .sc-icon-wrap { background: rgba(248,113,113,0.12); }
+    .status-card.sc-scab   .sc-icon-wrap { background: rgba(192,132,252,0.12); }
+    .sc-icon-wrap i { font-size: 1.75rem; }
+    .status-card.sc-normal .sc-icon-wrap i { color: var(--green); }
+    .status-card.sc-blotch .sc-icon-wrap i { color: var(--yellow); }
+    .status-card.sc-rot    .sc-icon-wrap i { color: var(--red); }
+    .status-card.sc-scab   .sc-icon-wrap i { color: var(--purple); }
+    .sc-lbl { font-size: 0.7rem; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 0.2rem; }
+    .sc-val { font-family: 'font-family', sans-serif; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.3px; }
+    .status-card.sc-normal .sc-val { color: var(--green4); }
+    .status-card.sc-blotch .sc-val { color: var(--yellow2); }
+    .status-card.sc-rot    .sc-val { color: var(--red2); }
+    .status-card.sc-scab   .sc-val { color: var(--purple2); }
+
+    /* Confidence */
+    .conf-block { margin-bottom: 1.5rem; }
+    .conf-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+    .conf-title { display: flex; align-items: center; gap: 7px; font-size: 0.78rem; font-weight: 600; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.6px; }
+    .conf-title i { font-size: 0.9rem; color: var(--green); }
+    .conf-pct { font-family: 'font-family', sans-serif; font-size: 1.1rem; font-weight: 800; }
+    .conf-track { height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; margin-bottom: 0.4rem; }
+    .conf-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+    .cf-normal { background: linear-gradient(90deg, var(--green3), var(--green)); }
+    .cf-blotch { background: linear-gradient(90deg, #b45309, var(--yellow)); }
+    .cf-rot    { background: linear-gradient(90deg, #b91c1c, var(--red)); }
+    .cf-scab   { background: linear-gradient(90deg, #7c3aed, var(--purple)); }
+    .conf-levels { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--muted); }
+
+    /* Info grid */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1.25rem; }
+    .info-tile { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+    .it-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 5px; }
+    .it-label i { font-size: 0.85rem; color: var(--green3); }
+    .it-val { font-family: 'font-family', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--text); }
+
+    /* Reco box */
+    .reco-box { background: var(--bg3); border: 1px solid var(--border2); border-radius: 14px; padding: 1.25rem 1.5rem; display: none; margin-top: 0.75rem; }
+    .reco-header { display: flex; align-items: center; gap: 8px; font-family: 'font-family', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 0.75rem; }
+    .reco-header i { font-size: 1rem; }
+    .reco-text { font-size: 0.84rem; color: var(--muted2); line-height: 1.65; }
+
+    /* Detail rows */
+    .detail-rows { border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem; }
+    .d-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.6rem 0; border-bottom: 1px solid rgba(74,222,128,0.06); gap: 1rem; font-size: 0.84rem; }
+    .d-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .d-key { color: var(--muted2); display: flex; align-items: center; gap: 6px; min-width: 120px; flex-shrink: 0; }
+    .d-key i { font-size: 0.9rem; color: var(--muted); }
+    .d-val { color: var(--text); font-weight: 500; text-align: right; }
+
+    /* Placeholder */
+    .placeholder-panel {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 20px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center;
+      padding: 4rem 2rem; min-height: 320px;
+      position: relative; overflow: hidden;
+    }
+    .placeholder-panel::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 200px; height: 200px; background: radial-gradient(ellipse, rgba(74,222,128,0.05) 0%, transparent 70%); }
+    .ph-big-icon { font-size: 4.5rem; color: var(--surface2); display: block; margin-bottom: 1.25rem; animation: phpulse 3s ease-in-out infinite; }
+    @keyframes phpulse { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.04)} }
+    .placeholder-panel h3 { font-family: 'font-family', sans-serif; font-size: 1rem; font-weight: 700; color: var(--muted2); margin-bottom: 0.5rem; }
+    .placeholder-panel p { font-size: 0.83rem; color: var(--muted); max-width: 260px; line-height: 1.6; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2rem 2rem; }
+    .foot-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .foot-brand { font-family: 'font-family', sans-serif; font-weight: 800; font-size: 0.95rem; color: var(--green); text-decoration: none; display: flex; align-items: center; gap: 7px; }
+    .foot-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .foot-links a { color: var(--muted); font-size: 0.8rem; text-decoration: none; transition: color 0.15s; }
+    .foot-links a:hover { color: var(--green); }
+    .foot-copy { color: var(--muted); font-size: 0.78rem; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--green3); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="nav">
+  <a class="nav-brand" href="/"><i class="mdi mdi-food-apple"></i>Smart<span class="nb">Apple</span></a>
+  <button class="nav-toggle" onclick="toggleMenu()"><i class="mdi mdi-menu" id="menu-icon"></i></button>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="/" class="nav-link">Beranda</a></li>
+    <li><a href="/deteksi" class="nav-link active">Deteksi</a></li>
+    <li><a href="/riwayat" class="nav-link">Riwayat</a></li>
+    <li><a href="/tentang" class="nav-link">Tentang</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="/riwayat" class="nav-cta"><i class="mdi mdi-history"></i> Riwayat Deteksi</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header" data-aos="fade-down" data-aos-duration="600">
+  <div class="ph-inner">
+    <div class="ph-badge"><i class="mdi mdi-shimmer"></i> MobileNetV2 — 4 Kelas Klasifikasi · Akurasi 98%</div>
+    <h1><i class="mdi mdi-magnify-scan"></i> Deteksi Penyakit Apel</h1>
+    <p>Upload foto apel dan dapatkan klasifikasi penyakit lengkap — Normal, Blotch, Rot, atau Scab — dalam hitungan detik.</p>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="detect-wrap">
+
+  <!-- ── KIRI: UPLOAD ── -->
+  <div>
+    <div class="panel" data-aos="fade-right" data-aos-delay="80">
+      <div class="panel-title"><i class="mdi mdi-image-plus-outline"></i> Input Gambar Apel</div>
+
+      <!-- Tabs -->
+      <div class="input-tabs">
+        <div class="input-tab active" id="tab-upload" onclick="switchTab('upload')">
+          <i class="mdi mdi-upload-outline"></i> Upload File
+        </div>
+        <div class="input-tab" id="tab-camera" onclick="switchTab('camera')">
+          <i class="mdi mdi-camera-outline"></i> Foto Langsung
+        </div>
+      </div>
+
+      <!-- Upload zone -->
+      <div id="section-upload">
+        <label class="upload-zone" for="file-input" id="upload-zone">
+          <i class="mdi mdi-cloud-upload-outline uz-icon" id="upload-icon"></i>
+          <div class="uz-text"><strong>Klik untuk upload</strong> atau drag &amp; drop</div>
+          <div class="uz-hint"><i class="mdi mdi-file-image-outline"></i> JPG, PNG, WEBP &mdash; maks. 5 MB</div>
+          <input type="file" id="file-input" accept="image/jpeg,image/png,image/webp" onchange="onFileSelected(event)" />
+        </label>
+      </div>
+
+      <!-- Camera zone -->
+      <div id="section-camera" style="display:none;">
+        <div class="upload-zone" style="cursor:default; padding:2rem 1.5rem;">
+          <i class="mdi mdi-camera-plus-outline uz-icon" style="color:var(--green2);"></i>
+          <div class="uz-text" style="margin-bottom:1rem;">Gunakan kamera untuk foto langsung</div>
+          <button onclick="openCamera()" style="background:var(--green);color:#080e0b;border:none;border-radius:10px;padding:0.7rem 1.75rem;font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all 0.2s;">
+            <i class="mdi mdi-camera"></i> Buka Kamera
+          </button>
+          <div class="uz-hint" style="margin-top:0.75rem;"><i class="mdi mdi-information-outline"></i> Izin akses kamera diperlukan</div>
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div id="preview-wrap">
+        <div class="preview-inner">
+          <img id="preview-img" alt="Preview apel" />
+          <div class="preview-overlay">
+            <div class="preview-filename"><i class="mdi mdi-file-image-outline"></i> <span id="prev-name">—</span></div>
+            <div class="preview-size" id="prev-size"></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-detect" id="btn-detect" onclick="runDetection()" disabled>
+        <i class="mdi mdi-magnify-scan"></i>
+        <span id="btn-label">Pilih Gambar Dulu</span>
+      </button>
+      <button class="btn-reset" id="btn-reset" onclick="resetAll()">
+        <i class="mdi mdi-refresh"></i> Foto Baru
+      </button>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-panel" data-aos="fade-up" data-aos-delay="180">
+      <div class="tips-header"><i class="mdi mdi-lightbulb-outline"></i> Tips Foto Terbaik</div>
+      <div class="tip-row"><i class="mdi mdi-ruler"></i><span>Foto dari jarak 20–30 cm agar detail permukaan terlihat jelas</span></div>
+      <div class="tip-row"><i class="mdi mdi-white-balance-sunny"></i><span>Gunakan pencahayaan alami, hindari backlight langsung</span></div>
+      <div class="tip-row"><i class="mdi mdi-focus-field"></i><span>Fokuskan kamera pada permukaan apel, bukan latar belakang</span></div>
+      <div class="tip-row"><i class="mdi mdi-food-apple-outline"></i><span>Satu apel per foto untuk hasil klasifikasi lebih akurat</span></div>
+      <div class="tip-row"><i class="mdi mdi-rotate-360"></i><span>Ambil dari sisi yang paling menampakkan kondisi permukaan buah</span></div>
+    </div>
+
+    <!-- 4 Class Info -->
+    <div class="class-mini-grid" data-aos="fade-up" data-aos-delay="240">
+      <div class="cmi cmi-normal">
+        <div class="cmi-head"><i class="mdi mdi-check-decagram"></i><span class="cmi-label">Normal</span></div>
+        <p>Sehat, tanpa penyakit. Siap konsumsi.</p>
+      </div>
+      <div class="cmi cmi-blotch">
+        <div class="cmi-head"><i class="mdi mdi-bacteria-outline"></i><span class="cmi-label">Blotch</span></div>
+        <p>Bercak hitam jamur. Perlu penanganan.</p>
+      </div>
+      <div class="cmi cmi-rot">
+        <div class="cmi-head"><i class="mdi mdi-skull-outline"></i><span class="cmi-label">Rot</span></div>
+        <p>Busuk parah. Tidak layak konsumsi.</p>
+      </div>
+      <div class="cmi cmi-scab">
+        <div class="cmi-head"><i class="mdi mdi-virus-outline"></i><span class="cmi-label">Scab</span></div>
+        <p>Permukaan kasar, infeksi jamur Venturia.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── KANAN: HASIL ── -->
+  <div>
+    <!-- Placeholder -->
+    <div class="placeholder-panel" id="placeholder-card" data-aos="fade-left" data-aos-delay="120">
+      <i class="mdi mdi-image-search-outline ph-big-icon"></i>
+      <h3>Menunggu Gambar</h3>
+      <p>Upload foto apel di sebelah kiri, lalu tekan <strong style="color:var(--green);">Deteksi</strong> untuk memulai analisis AI.</p>
+    </div>
+
+    <!-- Result Card -->
+    <div class="panel" id="result-card">
+      <div class="panel-title"><i class="mdi mdi-chart-line-variant"></i> Hasil Analisis Penyakit</div>
+
+      <!-- Spinner -->
+      <div class="spinner-wrap" id="spinner">
+        <div class="spin-outer">
+          <div class="spin-ring"></div>
+          <div class="spin-ring2"></div>
+          <div class="spin-dot"></div>
+        </div>
+        <div>
+          <div class="spin-label">Menganalisis gambar...</div>
+          <div class="spin-sub">Model MobileNetV2 sedang bekerja</div>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="status-card" id="status-card" style="display:none;">
+        <div class="sc-icon-wrap"><i class="mdi" id="sc-icon"></i></div>
+        <div>
+          <div class="sc-lbl">Kelas Penyakit Terdeteksi</div>
+          <div class="sc-val" id="sc-val">—</div>
+        </div>
+      </div>
+
+      <!-- Confidence -->
+      <div class="conf-block" id="conf-block" style="display:none;">
+        <div class="conf-header">
+          <div class="conf-title"><i class="mdi mdi-speedometer"></i> Confidence Score</div>
+          <div class="conf-pct" id="conf-pct">—</div>
+        </div>
+        <div class="conf-track"><div class="conf-fill" id="conf-fill"></div></div>
+        <div class="conf-levels">
+          <span>0%</span><span>Rendah</span><span>Sedang</span><span>Tinggi</span><span>100%</span>
+        </div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="info-grid" id="info-grid" style="display:none;">
+        <div class="info-tile">
+          <div class="it-label"><i class="mdi mdi-alert-circle-outline"></i> Kondisi</div>
+          <div class="it-val" id="val-kondisi">—</div>
+        </div>
+        <div class="info-tile">
+          <div class="it-label"><i class="mdi mdi-shield-alert-outline"></i> Risiko</div>
+          <div class="it-val" id="val-risiko">—</div>
+        </div>
+        <div class="info-tile">
+          <div class="it-label"><i class="mdi mdi-medical-bag"></i> Penanganan</div>
+          <div class="it-val" id="val-penanganan">—</div>
+        </div>
+        <div class="info-tile">
+          <div class="it-label"><i class="mdi mdi-shopping-outline"></i> Kelayakan</div>
+          <div class="it-val" id="val-layak">—</div>
+        </div>
+      </div>
+
+      <!-- Rekomendasi -->
+      <div class="reco-box" id="reco-box">
+        <div class="reco-header"><i class="mdi mdi-lightbulb-on-outline"></i> Rekomendasi Penanganan</div>
+        <div class="reco-text" id="reco-text"></div>
+      </div>
+
+      <!-- Detail rows -->
+      <div class="detail-rows" id="detail-rows" style="display:none;">
+        <div class="d-row">
+          <span class="d-key"><i class="mdi mdi-tag-outline"></i> Kelas Penyakit</span>
+          <span class="d-val" id="val-kelas">—</span>
+        </div>
+        <div class="d-row">
+          <span class="d-key"><i class="mdi mdi-bacteria-outline"></i> Penyebab</span>
+          <span class="d-val" id="val-penyebab">—</span>
+        </div>
+        <div class="d-row">
+          <span class="d-key"><i class="mdi mdi-star-outline"></i> Kualitas</span>
+          <span class="d-val" id="val-kualitas">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accuracy note -->
+    <div style="margin-top:1.25rem;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;display:flex;gap:10px;align-items:flex-start;" data-aos="fade-up" data-aos-delay="200">
+      <i class="mdi mdi-information-outline" style="color:var(--green3);font-size:1.1rem;margin-top:1px;flex-shrink:0;"></i>
+      <div>
+        <div style="font-family:'font-family',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text2);margin-bottom:0.2rem;">Tentang Akurasi Model</div>
+        <p style="font-size:0.77rem;color:var(--muted2);line-height:1.55;">Model MobileNetV2 dilatih dengan dataset 4 kelas penyakit apel dan mencapai akurasi <strong style="color:var(--green);">98%</strong> pada data validasi. Hasil terbaik diperoleh dari foto dengan pencahayaan baik dan fokus jelas pada permukaan buah.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- CAMERA MODAL -->
+<div class="cam-modal" id="cam-modal">
+  <div class="cam-box">
+    <div class="cam-header">
+      <div class="cam-title"><i class="mdi mdi-camera"></i> Foto Langsung</div>
+      <div class="cam-close" onclick="closeCamera()"><i class="mdi mdi-close"></i></div>
+    </div>
+    <div class="cam-viewport">
+      <video id="cam-video" autoplay playsinline muted></video>
+      <canvas id="cam-canvas"></canvas>
+      <div class="cam-overlay">
+        <div class="cam-frame"><div class="cam-scan-line"></div></div>
+      </div>
+      <div class="cam-hint"><i class="mdi mdi-crosshairs"></i> Arahkan apel ke dalam lingkaran</div>
+    </div>
+    <div class="cam-status" id="cam-status">Menginisialisasi kamera...</div>
+    <div class="cam-footer">
+      <div class="cam-switch" onclick="switchCamera()" title="Ganti kamera">
+        <i class="mdi mdi-camera-flip-outline"></i> Balik
+      </div>
+      <button class="cam-capture" onclick="capturePhoto()" id="btn-capture" disabled>
+        <i class="mdi mdi-camera-iris"></i> Ambil Foto
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <a href="/" class="foot-brand"><i class="mdi mdi-food-apple"></i> SmartApple</a>
+    <div class="foot-links">
+      <a href="/">Beranda</a>
+      <a href="/deteksi">Deteksi</a>
+      <a href="/riwayat">Riwayat</a>
+      <a href="/tentang">Tentang</a>
+    </div>
+    <div class="foot-copy">&copy; 2026 SmartApple — Powered by DRAM</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({ duration: 600, once: true, offset: 40 });
+
+  function toggleMenu() {
+    const nl = document.getElementById('nav-links');
+    const ic = document.getElementById('menu-icon');
+    nl.classList.toggle('open');
+    ic.className = nl.classList.contains('open') ? 'mdi mdi-close' : 'mdi mdi-menu';
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').style.background =
+      window.scrollY > 40 ? 'rgba(8,14,11,0.97)' : 'rgba(8,14,11,0.85)';
+  });
+
+  // ── Info per kelas ──────────────────────────────────────────────
+  const CLASS_INFO = {
+    normal: {
+      scClass:    'sc-normal',
+      icon:       'mdi-check-decagram',
+      konfColor:  'var(--green)',
+      cfClass:    'cf-normal',
+      kondisi:    'Sehat, tanpa penyakit',
+      risiko:     'Rendah',
+      penanganan: 'Konsumsi langsung',
+      layak:      'Layak konsumsi',
+      kelas:      'Normal Apple',
+      penyebab:   'Tidak ada (sehat)',
+      kualitas:   'Grade A — Premium',
+      reko:       'Apel dalam kondisi sehat dan siap dikonsumsi. Simpan di suhu 0–4°C untuk memperpanjang kesegaran. Hindari benturan dan paparan sinar matahari langsung setelah dipetik.',
+    },
+    blotch: {
+      scClass:    'sc-blotch',
+      icon:       'mdi-bacteria-outline',
+      konfColor:  'var(--yellow)',
+      cfClass:    'cf-blotch',
+      kondisi:    'Terinfeksi jamur Blotch',
+      risiko:     'Sedang',
+      penanganan: 'Potong bagian bercak',
+      layak:      'Sebagian layak',
+      kelas:      'Blotch Apple',
+      penyebab:   'Jamur Phyllosticta solitaria',
+      kualitas:   'Grade B — Terdampak',
+      reko:       'Potong dan buang bagian yang terkena bercak hitam. Bagian yang tidak terdampak masih dapat dikonsumsi. Untuk pencegahan, semprotkan fungisida berbasis tembaga pada tanaman secara berkala.',
+    },
+    rot: {
+      scClass:    'sc-rot',
+      icon:       'mdi-skull-outline',
+      konfColor:  'var(--red)',
+      cfClass:    'cf-rot',
+      kondisi:    'Pembusukan lanjut',
+      risiko:     'Tinggi',
+      penanganan: 'Buang segera',
+      layak:      'Tidak layak konsumsi',
+      kelas:      'Rot Apple',
+      penyebab:   'Bakteri / jamur pembusuk',
+      kualitas:   'Reject — Tidak layak',
+      reko:       'Apel tidak layak dikonsumsi sama sekali. Buang dan pisahkan dari apel lain untuk mencegah penyebaran. Bersihkan wadah penyimpanan dengan disinfektan. Periksa kondisi penyimpanan dan kelembaban.',
+    },
+    scab: {
+      scClass:    'sc-scab',
+      icon:       'mdi-virus-outline',
+      konfColor:  'var(--purple)',
+      cfClass:    'cf-scab',
+      kondisi:    'Infeksi jamur Scab',
+      risiko:     'Sedang–Tinggi',
+      penanganan: 'Fungisida / karantina',
+      layak:      'Perlu evaluasi',
+      kelas:      'Scab Apple',
+      penyebab:   'Jamur Venturia inaequalis',
+      kualitas:   'Grade C — Perlu perawatan',
+      reko:       'Pisahkan dari apel sehat untuk mencegah penyebaran. Aplikasikan fungisida berbasis mancozeb atau captan. Jika scab ringan, bagian yang tidak terdampak masih bisa dikonsumsi setelah dikupas.',
+    },
+  };
+
+  function getClass(label) {
+    const l = (label || '').toLowerCase();
+    if (l.includes('normal')) return 'normal';
+    if (l.includes('blotch')) return 'blotch';
+    if (l.includes('rot'))    return 'rot';
+    if (l.includes('scab'))   return 'scab';
+    return 'normal';
+  }
+
+  // ── File handling ───────────────────────────────────────────────
+  let selectedFile = null;
+
+  function onFileSelected(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    selectedFile = file;
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('preview-img').src = ev.target.result;
+      document.getElementById('prev-name').textContent = file.name;
+      document.getElementById('prev-size').textContent = (file.size / 1024).toFixed(0) + ' KB';
+      document.getElementById('preview-wrap').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+
+    document.getElementById('upload-zone').classList.add('has-file');
+    document.getElementById('upload-icon').className = 'mdi mdi-check-circle-outline uz-icon';
+    document.getElementById('btn-detect').disabled = false;
+    document.getElementById('btn-label').textContent = 'Analisis Sekarang';
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('placeholder-card').style.display = 'flex';
+  }
+
+  // ── Detection ───────────────────────────────────────────────────
+  async function runDetection() {
+    if (!selectedFile) return;
+
+    document.getElementById('placeholder-card').style.display = 'none';
+    document.getElementById('result-card').style.display = 'block';
+    document.getElementById('spinner').style.display = 'flex';
+    document.getElementById('status-card').style.display = 'none';
+    document.getElementById('conf-block').style.display = 'none';
+    document.getElementById('info-grid').style.display = 'none';
+    document.getElementById('reco-box').style.display = 'none';
+    document.getElementById('detail-rows').style.display = 'none';
+    document.getElementById('conf-fill').style.width = '0%';
+    document.getElementById('btn-detect').disabled = true;
+    document.getElementById('btn-label').textContent = 'Menganalisis...';
+    document.getElementById('btn-reset').style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const res = await fetch('/predict', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      showResult(data);
+    } catch (err) {
+      showError(err.message);
+    }
+  }
+
+  function showResult(data) {
+    document.getElementById('spinner').style.display = 'none';
+
+    const label = data.label || data.class || 'Normal';
+    const cls   = getClass(label);
+    const info  = CLASS_INFO[cls];
+    const conf  = parseFloat(data.confidence || 0) * 100;
+
+    // Status card
+    const sc = document.getElementById('status-card');
+    sc.className = 'status-card ' + info.scClass;
+    sc.style.display = 'flex';
+    document.getElementById('sc-icon').className = 'mdi ' + info.icon;
+    document.getElementById('sc-val').textContent = label;
+
+    // Confidence
+    document.getElementById('conf-block').style.display = 'block';
+    const pctEl = document.getElementById('conf-pct');
+    pctEl.textContent = conf.toFixed(1) + '%';
+    pctEl.style.color = info.konfColor;
+    const fill = document.getElementById('conf-fill');
+    fill.className = 'conf-fill ' + info.cfClass;
+    setTimeout(() => { fill.style.width = conf + '%'; }, 80);
+
+    // Info grid
+    document.getElementById('info-grid').style.display = 'grid';
+    document.getElementById('val-kondisi').textContent    = data.kondisi    || info.kondisi;
+    document.getElementById('val-risiko').textContent     = data.risiko     || info.risiko;
+    document.getElementById('val-penanganan').textContent = data.penanganan || info.penanganan;
+    document.getElementById('val-layak').textContent      = data.layak      || info.layak;
+
+    // Rekomendasi
+    document.getElementById('reco-box').style.display = 'block';
+    document.getElementById('reco-text').textContent =
+      data.solusi || data.rekomendasi || info.reko;
+
+    // Detail rows
+    document.getElementById('detail-rows').style.display = 'block';
+    document.getElementById('val-kelas').textContent    = data.kelas    || info.kelas;
+    document.getElementById('val-penyebab').textContent = data.penyebab || info.penyebab;
+    document.getElementById('val-kualitas').textContent = data.kualitas || info.kualitas;
+
+    document.getElementById('btn-detect').disabled = false;
+    document.getElementById('btn-label').textContent = 'Deteksi Ulang';
+    document.getElementById('btn-reset').style.display = 'flex';
+  }
+
+  function showError(msg) {
+    document.getElementById('spinner').style.display = 'none';
+    const sc = document.getElementById('status-card');
+    sc.style.cssText = 'display:flex;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-radius:14px;padding:1.25rem 1.5rem;align-items:center;gap:14px;margin-bottom:1.5rem;';
+    sc.innerHTML = `
+      <div style="width:54px;height:54px;border-radius:14px;background:rgba(248,113,113,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="mdi mdi-wifi-off" style="font-size:1.75rem;color:var(--red);"></i>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.2rem;">Error</div>
+        <div style="font-family:'font-family',sans-serif;font-size:1rem;font-weight:700;color:var(--red);">Gagal Terhubung</div>
+      </div>`;
+    document.getElementById('reco-box').style.display = 'block';
+    document.getElementById('reco-text').textContent =
+      'Pastikan server Flask berjalan dan endpoint /predict aktif. Detail: ' + msg;
+    document.getElementById('btn-detect').disabled = false;
+    document.getElementById('btn-label').textContent = 'Coba Lagi';
+    document.getElementById('btn-reset').style.display = 'flex';
+  }
+
+  function resetAll() {
+    selectedFile = null;
+    document.getElementById('file-input').value = '';
+    document.getElementById('preview-wrap').style.display = 'none';
+    document.getElementById('result-card').style.display = 'none';
+    document.getElementById('placeholder-card').style.display = 'flex';
+    document.getElementById('upload-zone').classList.remove('has-file');
+    document.getElementById('upload-icon').className = 'mdi mdi-cloud-upload-outline uz-icon';
+    document.getElementById('btn-detect').disabled = true;
+    document.getElementById('btn-label').textContent = 'Pilih Gambar Dulu';
+    document.getElementById('btn-reset').style.display = 'none';
+    document.getElementById('conf-fill').style.width = '0%';
+
+    // Restore status-card markup
+    document.getElementById('status-card').removeAttribute('style');
+    document.getElementById('status-card').innerHTML = `
+      <div class="sc-icon-wrap"><i class="mdi" id="sc-icon"></i></div>
+      <div>
+        <div class="sc-lbl">Kelas Penyakit Terdeteksi</div>
+        <div class="sc-val" id="sc-val">—</div>
+      </div>`;
+  }
+
+  // ── Camera ──────────────────────────────────────────────────────
+  let stream = null;
+  let currentFacingMode = 'environment';
+
+  async function openCamera() {
+    const modal  = document.getElementById('cam-modal');
+    const video  = document.getElementById('cam-video');
+    const status = document.getElementById('cam-status');
+    const btn    = document.getElementById('btn-capture');
+
+    modal.classList.add('open');
+    status.textContent = 'Mengaktifkan kamera...';
+    status.className   = 'cam-status';
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode } });
+      video.srcObject = stream;
+      btn.disabled    = false;
+      status.textContent = 'Kamera siap';
+      status.classList.add('ok');
+    } catch (err) {
+      status.textContent = 'Gagal akses kamera: ' + err.message;
+      status.classList.add('error');
+    }
+  }
+
+  function closeCamera() {
+    document.getElementById('cam-modal').classList.remove('open');
+    if (stream) stream.getTracks().forEach(t => t.stop());
+  }
+
+  function switchCamera() {
+    currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+    closeCamera();
+    openCamera();
+  }
+
+  function capturePhoto() {
+    const video  = document.getElementById('cam-video');
+    const canvas = document.getElementById('cam-canvas');
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+
+    canvas.toBlob(blob => {
+      selectedFile = new File([blob], 'camera.jpg', { type: 'image/jpeg' });
+      document.getElementById('preview-img').src = URL.createObjectURL(blob);
+      document.getElementById('preview-wrap').style.display = 'block';
+      document.getElementById('prev-name').textContent = 'camera.jpg';
+      document.getElementById('prev-size').textContent = 'Dari Kamera';
+      document.getElementById('btn-detect').disabled = false;
+      document.getElementById('btn-label').textContent = 'Analisis Sekarang';
+      closeCamera();
+    }, 'image/jpeg');
+  }
+
+  function switchTab(tab) {
+    const show = tab === 'upload' ? 'section-upload' : 'section-camera';
+    const hide = tab === 'upload' ? 'section-camera' : 'section-upload';
+    document.getElementById(show).style.display = 'block';
+    document.getElementById(hide).style.display = 'none';
+    document.getElementById('tab-upload').classList.toggle('active', tab === 'upload');
+    document.getElementById('tab-camera').classList.toggle('active', tab === 'camera');
+  }
+</script>
+</body>
+</html>
