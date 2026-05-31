@@ -3,476 +3,543 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
   <title>SmartApple — Tentang Sistem</title>
-
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      --bg: #080e0b;
-      --bg2: #0d1710;
-      --bg3: #111f15;
+      --bg:      #080e0b;
+      --bg2:     #0d1710;
+      --bg3:     #111f15;
       --surface: #172519;
-      --surface2: #1e3220;
-      --border: rgba(74, 222, 128, 0.1);
-      --border2: rgba(74, 222, 128, 0.2);
-      --green: #4ade80;
-      --green2: #22c55e;
-      --green3: #16a34a;
-      --green4: #bbf7d0;
-      --accent: #a3e635;
-      --text: #f0fdf4;
-      --text2: #86efac;
-      --muted: #52615a;
-      --muted2: #8a9e93;
+      --surface2:#1e3220;
+      --border:  rgba(74,222,128,0.1);
+      --border2: rgba(74,222,128,0.2);
+      --green:   #4ade80;
+      --green2:  #22c55e;
+      --green3:  #16a34a;
+      --green4:  #bbf7d0;
+      --accent:  #a3e635;
+      --text:    #f0fdf4;
+      --text2:   #86efac;
+      --muted:   #52615a;
+      --muted2:  #8a9e93;
     }
 
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
     body {
-      font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.65;
-      font-size: 1rem;
       overflow-x: hidden;
+      max-width: 100vw;
     }
 
-    h1,
-    h2,
-    h3,
-    .sec-title {
-      font-family: 'Montserrat', system-ui, sans-serif;
+    h1, h2, h3, h4 {
+      font-family: 'Inter', system-ui, sans-serif;
       font-weight: 700;
       letter-spacing: -0.025em;
     }
 
-    /* Navbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--green3); }
+
+    /* ══════════════════════
+       NAVBAR — identical to Beranda
+    ══════════════════════ */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 500;
-      height: 64px;
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(8, 14, 11, 0.8);
-      backdrop-filter: blur(24px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      height: 60px; padding: 0 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,14,11,0.88);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       transition: background 0.3s;
     }
-
     .nav-brand {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1.2rem;
-      color: var(--green);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-family: 'Inter', sans-serif; font-weight: 800; font-size: 1.1rem;
+      color: var(--green); text-decoration: none;
+      display: flex; align-items: center; gap: 7px;
+      -webkit-tap-highlight-color: transparent;
     }
-
-    .nav-brand i {
-      font-size: 1.45rem;
-    }
-
-    .nav-brand .nb {
-      color: var(--text);
-    }
-
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 0.1rem;
-    }
-
-    .nav-link {
-      text-decoration: none;
-      color: var(--muted2);
-      font-size: 0.875rem;
-      font-weight: 500;
-      padding: 0.45rem 0.9rem;
-      border-radius: 8px;
-      transition: all 0.2s;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-      background: var(--surface);
-    }
-
-    .nav-link.active {
-      color: var(--green);
-      background: rgba(74, 222, 128, 0.08);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .nav-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--green3);
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 600;
-      padding: 0.5rem 1.1rem;
-      border-radius: 8px;
-      text-decoration: none;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: all 0.2s;
-    }
-
-    .nav-cta:hover {
-      background: var(--green2);
-      transform: translateY(-1px);
-    }
+    .nav-brand i { font-size: 1.3rem; }
+    .nav-brand .nb { color: var(--text); }
 
     .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.4rem;
-      color: var(--text);
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; cursor: pointer; font-size: 1.3rem; color: var(--text);
+      -webkit-tap-highlight-color: transparent; transition: background 0.2s;
     }
+    .nav-toggle:active { background: var(--surface2); }
 
-    @media (max-width: 720px) {
-      .nav-toggle {
-        display: block;
-      }
+    .nav-links { display: none; list-style: none; }
+    .nav-right  { display: none; }
 
-      .nav-cta {
-        display: none;
-      }
+    .nav-links.open {
+      display: flex; flex-direction: column;
+      position: fixed; top: 60px; left: 0; right: 0;
+      background: rgba(8,14,11,0.98);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+      gap: 0.15rem; z-index: 499;
+    }
+    .nav-link {
+      text-decoration: none; color: var(--muted2); font-size: 0.95rem;
+      font-weight: 500; padding: 0.7rem 0.85rem; border-radius: 10px;
+      transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-link:active { background: var(--surface); }
+    .nav-link.active { color: var(--green); background: rgba(74,222,128,0.08); }
+    .nav-link-cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--green3); color: #fff;
+      font-weight: 700; font-size: 0.95rem; padding: 0.8rem;
+      border-radius: 10px; text-decoration: none; margin-top: 0.4rem;
+      -webkit-tap-highlight-color: transparent; transition: background 0.2s;
+    }
+    .nav-link-cta:active { background: var(--green2); }
 
+    @media (min-width: 768px) {
+      nav { height: 64px; padding: 0 2rem; }
+      .nav-toggle { display: none; }
       .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 64px;
-        left: 0;
-        right: 0;
-        background: rgba(8, 14, 11, 0.98);
-        backdrop-filter: blur(24px);
-        border-bottom: 1px solid var(--border);
-        padding: 1rem 1.5rem 1.25rem;
-        gap: 0.15rem;
+        display: flex !important; flex-direction: row;
+        position: static; background: none; border: none; padding: 0;
+        backdrop-filter: none; gap: 0.1rem;
       }
-
-      .nav-links.open {
-        display: flex;
+      .nav-link { font-size: 0.875rem; padding: 0.45rem 0.9rem; }
+      .nav-link:hover { color: var(--text); background: var(--surface); }
+      .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+      .nav-cta {
+        display: inline-flex; align-items: center; gap: 7px;
+        background: var(--green3); color: #fff; font-size: 0.85rem; font-weight: 600;
+        padding: 0.5rem 1.1rem; border-radius: 8px; text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.08); transition: all 0.2s;
       }
+      .nav-cta:hover { background: var(--green2); transform: translateY(-1px); }
+      .nav-link-cta { display: none; }
     }
 
-    /* Page Header */
+    /* ══════════════════════
+       PAGE HEADER
+    ══════════════════════ */
     .page-header {
-      background: linear-gradient(135deg, #14532d 0%, #0a0f0c 100%);
-      padding: 4rem 2rem 3rem;
-      text-align: center;
+      padding: 5.5rem 1rem 2.5rem; text-align: center;
+      position: relative; overflow: hidden;
     }
+    .page-header::before {
+      content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 600px; height: 280px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(22,163,74,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; }
+    .orb-1 { width: 180px; height: 180px; background: rgba(74,222,128,0.06); top: 5%; left: -5%; animation: orbf 9s ease-in-out infinite; }
+    .orb-2 { width: 140px; height: 140px; background: rgba(163,230,53,0.05); bottom: 5%; right: -5%; animation: orbf 11s ease-in-out infinite 4s; }
+    @keyframes orbf { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
 
+    .ph-inner { position: relative; z-index: 2; }
+    .ph-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(74,222,128,0.07); border: 1px solid var(--border2);
+      color: var(--green); font-size: 0.68rem; font-weight: 600;
+      padding: 0.32rem 0.85rem; border-radius: 99px; margin-bottom: 1rem;
+      text-transform: uppercase; letter-spacing: 0.8px;
+    }
     .page-header h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
+      font-size: clamp(1.7rem, 7vw, 2.8rem); font-weight: 800;
+      letter-spacing: -1px; color: var(--text); margin-bottom: 0.55rem;
+      display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    }
+    .page-header h1 i { color: var(--green); font-size: clamp(1.5rem, 6vw, 2.2rem); }
+    .page-header p { color: var(--muted2); font-size: 0.9rem; max-width: 480px; margin: 0 auto; }
+
+    @media (min-width: 768px) {
+      .page-header { padding: 7.5rem 2rem 3.5rem; }
     }
 
-    /* Main Content */
+    /* ══════════════════════
+       MAIN CONTENT
+    ══════════════════════ */
     .main {
-      max-width: 1060px;
-      margin: 0 auto;
-      padding: 5.5rem 2rem 6rem;
+      max-width: 1060px; margin: 0 auto;
+      padding: 2.5rem 1rem 5rem;
     }
+    @media (min-width: 768px) { .main { padding: 4rem 2rem 6rem; } }
 
+    /* Section blocks */
+    .sec { margin-bottom: 3rem; }
+    .sec:last-of-type { margin-bottom: 0; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--green); font-size: 0.68rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 0.45rem;
+    }
     .sec-title {
-      font-size: clamp(1.75rem, 3.8vw, 2.65rem);
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.9px;
-      margin-bottom: 0.8rem;
+      font-size: clamp(1.3rem, 4.5vw, 2rem); font-weight: 800;
+      color: var(--text); letter-spacing: -0.6px; line-height: 1.15; margin-bottom: 0.4rem;
     }
-
     .section-divider {
-      height: 3px;
-      width: 60px;
-      background: var(--green);
-      border-radius: 9999px;
-      margin-bottom: 2rem;
+      height: 3px; width: 48px; background: var(--green);
+      border-radius: 99px; margin-bottom: 1.5rem;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-    }
+    /* Info / description text */
+    .sec-body { color: var(--muted2); font-size: 0.9rem; line-height: 1.75; }
+    .sec-body + .sec-body { margin-top: 0.75rem; }
+    .sec-body strong { color: var(--text2); font-weight: 600; }
 
+    /* Highlight card */
     .info-card {
-      background: rgba(74, 222, 128, 0.08);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1.75rem;
-      display: flex;
-      gap: 16px;
+      background: rgba(74,222,128,0.06); border: 1px solid var(--border2);
+      border-radius: 16px; padding: 1.35rem 1.5rem;
+      display: flex; gap: 14px; align-items: flex-start; margin-top: 1.25rem;
     }
+    .info-card i { font-size: 1.75rem; color: var(--green); flex-shrink: 0; margin-top: 2px; }
+    .info-card-body { display: flex; flex-direction: column; gap: 0.2rem; }
+    .info-card-title { font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--text); }
+    .info-card-text  { font-size: 0.85rem; color: var(--muted2); line-height: 1.6; }
 
-    .info-card i {
-      font-size: 2rem;
-      color: var(--green);
-      flex-shrink: 0;
+    /* Accuracy banner */
+    .acc-banner {
+      display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.25rem;
     }
+    .acc-item {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.1rem 1.4rem; flex: 1; min-width: 120px; text-align: center;
+    }
+    .acc-val { font-family: 'Inter', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--green); line-height: 1; }
+    .acc-lbl { font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
 
+    /* Tech grid */
     .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-      gap: 1.25rem;
-      margin-top: 1.5rem;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem; margin-top: 1.35rem;
     }
+    @media (min-width: 540px) { .tech-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 768px) { .tech-grid { grid-template-columns: repeat(6, 1fr); } }
 
     .tech-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.75rem 1rem;
-      text-align: center;
-      transition: all 0.3s;
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 0.5rem; text-align: center;
+      transition: all 0.2s; -webkit-tap-highlight-color: transparent;
     }
+    .tech-card:active  { border-color: var(--border2); transform: translateY(-2px); }
+    .tech-card:hover   { border-color: var(--border2); transform: translateY(-4px); }
+    .tech-card i { font-size: 1.6rem; color: var(--green); display: block; margin-bottom: 0.35rem; }
+    .tech-name { font-size: 0.72rem; font-weight: 700; color: var(--text); }
+    .tech-desc { font-size: 0.6rem; color: var(--muted); margin-top: 0.1rem; }
 
-    .tech-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--green);
-    }
-
-    .tech-card i {
-      font-size: 2.2rem;
-      color: var(--green);
-      margin-bottom: 0.8rem;
-    }
-
-    .goal-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 1.1rem;
-    }
-
+    /* Goal list */
+    .goal-list { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; margin-top: 0.5rem; }
     .goal-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 1.02rem;
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.9rem; color: var(--muted2); line-height: 1.6;
     }
+    .goal-list li i { color: var(--green); font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
 
-    .cta-box {
-      background: linear-gradient(135deg, #14532d, #0a0f0c);
-      border-radius: 20px;
-      padding: 4rem 2rem;
-      text-align: center;
-      margin-top: 3rem;
+    /* Team card grid */
+    .team-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 0.85rem; margin-top: 1.35rem;
     }
+    @media (min-width: 480px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 768px) { .team-grid { grid-template-columns: repeat(4, 1fr); } }
 
-    .cta-box h3 {
-      font-size: 2rem;
-      color: white;
-      margin-bottom: 1rem;
+    .team-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.35rem; text-align: center;
+      transition: border-color 0.2s;
     }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--green);
-      color: #080e0b;
-      font-weight: 700;
-      padding: 1rem 2.5rem;
-      border-radius: 12px;
-      text-decoration: none;
-      font-size: 1.05rem;
-      transition: all 0.3s;
+    .team-card:hover { border-color: var(--border2); }
+    .team-avatar {
+      width: 54px; height: 54px; border-radius: 50%; margin: 0 auto 0.75rem;
+      background: rgba(74,222,128,0.1); border: 2px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
     }
+    .team-avatar i { font-size: 1.5rem; color: var(--green); }
+    .team-name { font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 700; color: var(--text); }
+    .team-role { font-size: 0.75rem; color: var(--muted2); margin-top: 0.2rem; }
+    .team-nim  { font-size: 0.68rem; color: var(--muted);  margin-top: 0.1rem; }
 
-    .btn-primary:hover {
-      background: var(--accent);
-      transform: translateY(-4px);
+    /* CTA box */
+    .cta-sec {
+      margin-top: 3.5rem;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 22px; overflow: hidden; position: relative;
     }
+    .cta-glow {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 80%; height: 180px;
+      background: radial-gradient(ellipse, rgba(22,163,74,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 2; padding: 3rem 1.25rem; text-align: center; }
+    @media (min-width: 640px) { .cta-inner { padding: 3.5rem 2.5rem; } }
 
-    /* ── FOOTER ── */
-    footer { background: var(--bg); border-top: 1px solid var(--border); padding: 2.5rem 2rem; }
-    .foot-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-    .foot-brand { font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.95rem; color: var(--green); text-decoration: none; display: flex; align-items: center; gap: 7px; }
-    .foot-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .foot-links a { color: var(--muted); font-size: 0.8rem; text-decoration: none; transition: color 0.15s; }
+    .cta-inner h2 {
+      font-size: clamp(1.4rem, 5.5vw, 2.2rem); font-weight: 800;
+      color: var(--text); letter-spacing: -0.8px; line-height: 1.15; margin-bottom: 0.65rem;
+    }
+    .cta-inner h2 em { font-style: normal; color: var(--green); }
+    .cta-inner p { color: var(--muted2); font-size: 0.88rem; margin-bottom: 1.75rem; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .btn-cta {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: var(--green); color: #080e0b;
+      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.95rem;
+      padding: 0.9rem 2rem; border-radius: 12px; text-decoration: none; min-height: 50px;
+      -webkit-tap-highlight-color: transparent; transition: all 0.2s;
+    }
+    .btn-cta:active { background: var(--accent); transform: scale(0.98); }
+    .btn-cta:hover  { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(74,222,128,0.2); }
+
+    /* ══════════════════════
+       FOOTER
+    ══════════════════════ */
+    footer {
+      background: var(--bg); border-top: 1px solid var(--border);
+      padding: 1.75rem 1rem;
+      padding-bottom: calc(1.75rem + env(safe-area-inset-bottom));
+    }
+    .foot-inner {
+      max-width: 1060px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 1rem; text-align: center;
+    }
+    .foot-brand {
+      font-family: 'Inter', sans-serif; font-weight: 800; font-size: 0.95rem;
+      color: var(--green); text-decoration: none; display: flex; align-items: center; gap: 7px;
+    }
+    .foot-links { display: flex; gap: 1.25rem; flex-wrap: wrap; justify-content: center; }
+    .foot-links a { color: var(--muted); font-size: 0.8rem; text-decoration: none; }
     .foot-links a:hover { color: var(--green); }
-    .foot-copy { color: var(--muted); font-size: 0.78rem; }
+    .foot-copy { color: var(--muted); font-size: 0.73rem; }
 
-    @media (max-width: 720px) {
-      .nav-toggle {
-        display: block;
-      }
+    @media (min-width: 640px) {
+      footer { padding: 2rem 2rem; }
+      .foot-inner { flex-direction: row; justify-content: space-between; text-align: left; }
     }
-    /* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: #080e0b; /* sama kayak bg */
-}
-
-::-webkit-scrollbar-thumb {
-  background: #1e3220; /* warna gelap */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #16a34a; /* hijau hover */
-}
   </style>
 </head>
 
 <body>
 
- <!-- NAVBAR -->
+  <!-- ══ NAVBAR ══ -->
   <nav id="nav">
-    <a class="nav-brand" href="/">
-      <i class="mdi mdi-food-apple"></i>Smart<span class="nb">Apple</span>
-    </a>
+    <a class="nav-brand" href="/"><i class="mdi mdi-food-apple"></i>Smart<span class="nb">Apple</span></a>
 
-    <button class="nav-toggle" onclick="toggleMenu()">
+    <button class="nav-toggle" onclick="toggleMenu()" aria-label="Menu">
       <i class="mdi mdi-menu" id="menu-icon"></i>
     </button>
 
     <ul class="nav-links" id="nav-links">
-      <li><a href="/" class="nav-link">Beranda</a></li>
-      <li><a href="/deteksi" class="nav-link">Deteksi</a></li>
-      <li><a href="/riwayat" class="nav-link">Riwayat</a></li>
-      <li><a href="/tentang" class="nav-link active">Tentang</a></li>
+      <li><a href="/"        class="nav-link"><i class="mdi mdi-home-outline"></i> Beranda</a></li>
+      <li><a href="/deteksi" class="nav-link"><i class="mdi mdi-magnify-scan"></i> Deteksi</a></li>
+      <li><a href="/riwayat" class="nav-link"><i class="mdi mdi-history"></i> Riwayat</a></li>
+      <li><a href="/tentang" class="nav-link active"><i class="mdi mdi-information-outline"></i> Tentang</a></li>
+      <a href="/deteksi" class="nav-link-cta"><i class="mdi mdi-magnify-scan"></i> Deteksi Sekarang</a>
     </ul>
 
     <div class="nav-right">
-      <a href="/deteksi" class="nav-cta">
-        <i class="mdi mdi-magnify-scan"></i> Deteksi Sekarang
-      </a>
+      <a href="/deteksi" class="nav-cta"><i class="mdi mdi-magnify-scan"></i> Deteksi Sekarang</a>
     </div>
   </nav>
 
-  <!-- Page Header -->
-  <div class="page-header" data-aos="fade-down">
-    <h1><i class="mdi mdi-information-outline"></i> Tentang SmartApple</h1>
-    <p>Sistem deteksi kematangan buah apel berbasis web menggunakan deep learning</p>
+  <!-- ══ PAGE HEADER ══ -->
+  <div class="page-header">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="ph-inner">
+      <div class="ph-badge" data-aos="fade-down"><i class="mdi mdi-shimmer"></i> MobileNetV2 · Akurasi 98%</div>
+      <h1 data-aos="fade-up" data-aos-delay="80"><i class="mdi mdi-information-outline"></i> Tentang SmartApple</h1>
+      <p data-aos="fade-up" data-aos-delay="140">Sistem deteksi penyakit buah apel berbasis web menggunakan deep learning</p>
+    </div>
   </div>
 
+  <!-- ══ MAIN ══ -->
   <div class="main">
 
-    <section data-aos="fade-up">
-      <div class="section-title"><i class="mdi mdi-text-box-outline"></i> Deskripsi Proyek</div>
+    <!-- Deskripsi -->
+    <section class="sec" data-aos="fade-up">
+      <div class="eyebrow"><i class="mdi mdi-text-box-outline"></i> Deskripsi</div>
+      <h2 class="sec-title">Tentang Proyek</h2>
       <div class="section-divider"></div>
-      <p>
-        <strong>SmartApple</strong> adalah aplikasi berbasis web yang membantu petani dan masyarakat mengidentifikasi
-        tingkat kematangan buah apel hanya dengan mengunggah foto.
+      <p class="sec-body">
+        <strong>SmartApple</strong> adalah aplikasi berbasis web yang membantu petani, konsumen, dan peneliti
+        mengidentifikasi kondisi buah apel hanya dengan mengunggah foto.
       </p>
-      <p>
-        Sistem ini menggunakan model <strong>MobileNetV2</strong> untuk mendeteksi dua kelas utama:
-        <strong>Matang</strong> dan <strong>Belum Matang</strong>, serta memberikan estimasi panen dan rekomendasi yang
-        berguna.
+      <p class="sec-body" style="margin-top:0.75rem;">
+        Sistem ini mengklasifikasikan apel ke dalam empat kelas: <strong>Normal</strong>, <strong>Blotch</strong>,
+        <strong>Rot</strong>, dan <strong>Scab</strong> — lengkap dengan confidence score, tingkat keparahan,
+        dan rekomendasi penanganan.
       </p>
-    </section>
 
-    <section data-aos="fade-up">
-      <div class="section-title"><i class="mdi mdi-brain"></i> Metode yang Digunakan</div>
-      <div class="section-divider"></div>
-      <div class="card">
-        <p><strong>MobileNetV2</strong> — Arsitektur CNN yang ringan dan efisien, cocok untuk aplikasi web. Model ini
-          dilatih menggunakan transfer learning untuk mencapai akurasi tinggi dengan resource yang terbatas.</p>
+      <!-- Accuracy banner -->
+      <div class="acc-banner" data-aos="fade-up" data-aos-delay="80">
+        <div class="acc-item">
+          <div class="acc-val">98%</div>
+          <div class="acc-lbl">Akurasi Model</div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-val">4</div>
+          <div class="acc-lbl">Kelas Deteksi</div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-val">&lt;5s</div>
+          <div class="acc-lbl">Waktu Respon</div>
+        </div>
+        <div class="acc-item">
+          <div class="acc-val">100%</div>
+          <div class="acc-lbl">Berbasis Web</div>
+        </div>
       </div>
     </section>
 
-    <section data-aos="fade-up">
-      <div class="section-title"><i class="mdi mdi-code-braces"></i> Teknologi Stack</div>
+    <!-- Metode -->
+    <section class="sec" data-aos="fade-up">
+      <div class="eyebrow"><i class="mdi mdi-brain"></i> Model AI</div>
+      <h2 class="sec-title">Metode yang Digunakan</h2>
+      <div class="section-divider"></div>
+      <div class="info-card">
+        <i class="mdi mdi-layers-triple-outline"></i>
+        <div class="info-card-body">
+          <div class="info-card-title">MobileNetV2 — Transfer Learning</div>
+          <div class="info-card-text">
+            Arsitektur CNN yang ringan dan efisien, dilatih ulang menggunakan transfer learning
+            pada dataset penyakit apel. Dirancang untuk performa tinggi di lingkungan web
+            tanpa membutuhkan hardware khusus.
+          </div>
+        </div>
+      </div>
+      <div class="info-card" style="margin-top:0.85rem;">
+        <i class="mdi mdi-image-search-outline"></i>
+        <div class="info-card-body">
+          <div class="info-card-title">Deteksi Visual Berbasis Pola</div>
+          <div class="info-card-text">
+            Model mengekstrak fitur visual seperti warna, tekstur, dan pola bercak dari gambar,
+            lalu mengklasifikasikannya ke salah satu dari 4 kelas penyakit apel secara otomatis.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="sec" data-aos="fade-up">
+      <div class="eyebrow"><i class="mdi mdi-code-braces"></i> Teknologi</div>
+      <h2 class="sec-title">Stack yang Digunakan</h2>
       <div class="section-divider"></div>
       <div class="tech-grid">
-        <div class="tech-card"><i class="mdi mdi-language-python"></i>
-          <div>Python</div>
+        <div class="tech-card" data-aos="zoom-in" data-aos-delay="40">
+          <i class="mdi mdi-language-python"></i>
+          <div class="tech-name">Python</div>
+          <div class="tech-desc">Backend & ML</div>
         </div>
-        <div class="tech-card"><i class="mdi mdi-flask-outline"></i>
-          <div>Flask</div>
+        <div class="tech-card" data-aos="zoom-in" data-aos-delay="80">
+          <i class="mdi mdi-flask-outline"></i>
+          <div class="tech-name">Flask</div>
+          <div class="tech-desc">Framework</div>
         </div>
-        <div class="tech-card"><i class="mdi mdi-robot"></i>
-          <div>TensorFlow</div>
+        <div class="tech-card" data-aos="zoom-in" data-aos-delay="120">
+          <i class="mdi mdi-robot"></i>
+          <div class="tech-name">TensorFlow</div>
+          <div class="tech-desc">Deep Learning</div>
         </div>
-        <div class="tech-card"><i class="mdi mdi-brain"></i>
-          <div>MobileNetV2</div>
+        <div class="tech-card" data-aos="zoom-in" data-aos-delay="160">
+          <i class="mdi mdi-layers-triple-outline"></i>
+          <div class="tech-name">MobileNetV2</div>
+          <div class="tech-desc">CNN</div>
         </div>
-        <div class="tech-card"><i class="mdi mdi-language-html5"></i>
-          <div>HTML/CSS/JS</div>
+        <div class="tech-card" data-aos="zoom-in" data-aos-delay="200">
+          <i class="mdi mdi-language-html5"></i>
+          <div class="tech-name">HTML/CSS/JS</div>
+          <div class="tech-desc">Frontend</div>
         </div>
-        <div class="tech-card"><i class="mdi mdi-database-outline"></i>
-          <div>SQLite</div>
+        <div class="tech-card" data-aos="zoom-in" data-aos-delay="240">
+          <i class="mdi mdi-database-outline"></i>
+          <div class="tech-name">SQLite</div>
+          <div class="tech-desc">Riwayat</div>
         </div>
       </div>
     </section>
 
-    <section data-aos="fade-up">
-      <div class="section-title"><i class="mdi mdi-flag-checkered"></i> Tujuan Pengembangan</div>
+    <!-- Tujuan -->
+    <section class="sec" data-aos="fade-up">
+      <div class="eyebrow"><i class="mdi mdi-flag-checkered"></i> Tujuan</div>
+      <h2 class="sec-title">Tujuan Pengembangan</h2>
       <div class="section-divider"></div>
       <ul class="goal-list">
-        <li><i class="mdi mdi-check-circle"></i> Membantu petani menentukan waktu panen yang tepat</li>
-        <li><i class="mdi mdi-check-circle"></i> Memberikan analisis cepat hanya dengan foto apel</li>
-        <li><i class="mdi mdi-check-circle"></i> Meningkatkan kualitas hasil panen apel</li>
-        <li><i class="mdi mdi-check-circle"></i> Menjadi solusi AI pertanian yang mudah diakses</li>
+        <li><i class="mdi mdi-check-circle"></i> Membantu petani mendeteksi penyakit apel sejak dini sebelum menyebar ke seluruh kebun</li>
+        <li><i class="mdi mdi-check-circle"></i> Memberikan analisis cepat hanya dengan mengunggah foto dari ponsel</li>
+        <li><i class="mdi mdi-check-circle"></i> Meningkatkan kualitas dan nilai jual hasil panen apel</li>
+        <li><i class="mdi mdi-check-circle"></i> Menjadi platform eksplorasi AI di bidang patologi tanaman</li>
+        <li><i class="mdi mdi-check-circle"></i> Menyediakan solusi AI pertanian yang mudah diakses tanpa keahlian teknis</li>
       </ul>
     </section>
 
+    <!-- Tim -->
+    <section class="sec" data-aos="fade-up">
+      <div class="eyebrow"><i class="mdi mdi-account-group-outline"></i> Tim</div>
+      <h2 class="sec-title">Pengembang</h2>
+      <div class="section-divider"></div>
+      <div class="team-grid">
+        <div class="team-card" data-aos="fade-up" data-aos-delay="60">
+          <div class="team-avatar"><i class="mdi mdi-account-outline"></i></div>
+          <div class="team-name">Anggota 1</div>
+          <div class="team-role">Machine Learning</div>
+          <div class="team-nim">NIM: XXXXXXXXXX</div>
+        </div>
+        <div class="team-card" data-aos="fade-up" data-aos-delay="110">
+          <div class="team-avatar"><i class="mdi mdi-account-outline"></i></div>
+          <div class="team-name">Anggota 2</div>
+          <div class="team-role">Backend Developer</div>
+          <div class="team-nim">NIM: XXXXXXXXXX</div>
+        </div>
+        <div class="team-card" data-aos="fade-up" data-aos-delay="160">
+          <div class="team-avatar"><i class="mdi mdi-account-outline"></i></div>
+          <div class="team-name">Anggota 3</div>
+          <div class="team-role">Frontend Developer</div>
+          <div class="team-nim">NIM: XXXXXXXXXX</div>
+        </div>
+        <div class="team-card" data-aos="fade-up" data-aos-delay="210">
+          <div class="team-avatar"><i class="mdi mdi-account-outline"></i></div>
+          <div class="team-name">Anggota 4</div>
+          <div class="team-role">Data & Dokumentasi</div>
+          <div class="team-nim">NIM: XXXXXXXXXX</div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA -->
-    <div class="cta-box" data-aos="zoom-in">
-      <h3><i class="mdi mdi-rocket-launch-outline"></i> Siap Mencoba?</h3>
-      <p style="color:var(--text2);max-width:500px;margin:0 auto 2rem;">
-        Unggah foto buah apel Anda dan dapatkan hasil analisis kematangan secara instan.
-      </p>
-      <a href="/deteksi" class="btn-primary">
-        <i class="mdi mdi-magnify-scan"></i> Mulai Deteksi Sekarang
-      </a>
+    <div class="cta-sec" data-aos="fade-up">
+      <div class="cta-glow"></div>
+      <div class="cta-inner">
+        <h2>Coba <em>SmartApple</em><br>Sekarang — Gratis</h2>
+        <p>Upload foto apel dan dapatkan klasifikasi penyakit lengkap dalam hitungan detik. Tanpa registrasi.</p>
+        <a href="/deteksi" class="btn-cta"><i class="mdi mdi-magnify-scan"></i> Mulai Deteksi Sekarang</a>
+      </div>
     </div>
 
-  </div>
+  </div><!-- /main -->
 
+  <!-- ══ FOOTER ══ -->
   <footer>
     <div class="foot-inner">
-      <a href="/" class="foot-brand">
-        <i class="mdi mdi-food-apple"></i> SmartApple
-      </a>
+      <a href="/" class="foot-brand"><i class="mdi mdi-food-apple"></i> SmartApple</a>
       <div class="foot-links">
         <a href="/">Beranda</a>
         <a href="/deteksi">Deteksi</a>
@@ -485,20 +552,38 @@
 
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <script>
-    AOS.init({ duration: 650, once: true, offset: 50 });
+    AOS.init({ duration: 600, once: true, offset: 30 });
 
     function toggleMenu() {
       const nl = document.getElementById('nav-links');
       const ic = document.getElementById('menu-icon');
-      nl.classList.toggle('open');
-      ic.className = nl.classList.contains('open') ? 'mdi mdi-close' : 'mdi mdi-menu';
+      const isOpen = nl.classList.toggle('open');
+      ic.className = isOpen ? 'mdi mdi-close' : 'mdi mdi-menu';
+      document.body.style.overflow = isOpen ? 'hidden' : '';
     }
+
+    document.querySelectorAll('.nav-link, .nav-link-cta').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('nav-links').classList.remove('open');
+        document.getElementById('menu-icon').className = 'mdi mdi-menu';
+        document.body.style.overflow = '';
+      });
+    });
+
+    document.addEventListener('click', e => {
+      const nl = document.getElementById('nav-links');
+      const toggle = document.querySelector('.nav-toggle');
+      if (nl.classList.contains('open') && !nl.contains(e.target) && !toggle.contains(e.target)) {
+        nl.classList.remove('open');
+        document.getElementById('menu-icon').className = 'mdi mdi-menu';
+        document.body.style.overflow = '';
+      }
+    });
 
     window.addEventListener('scroll', () => {
       document.getElementById('nav').style.background =
-        window.scrollY > 40 ? 'rgba(8,14,11,0.97)' : 'rgba(8,14,11,0.8)';
-    });
+        window.scrollY > 40 ? 'rgba(8,14,11,0.97)' : 'rgba(8,14,11,0.88)';
+    }, { passive: true });
   </script>
 </body>
-
 </html>
